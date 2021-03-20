@@ -23,24 +23,27 @@ def access():
 
 
 def find(browser, data):
-    search = browser.find_element_by_name("sqUnidadeConsumidora")
-    search.send_keys("8246998")
-    search = browser.find_element_by_name("numeroDocumentoCPF")
-    search.send_keys("71012710904")
-    search.send_keys(Keys.RETURN)
+    try:
+        search = browser.find_element_by_name("sqUnidadeConsumidora")
+        search.send_keys("8246998")
+        search = browser.find_element_by_name("numeroDocumentoCPF")
+        search.send_keys("71012710904")
+        search.send_keys(Keys.RETURN)
 
-    WebDriverWait(browser, 10).until(
-                EC.presence_of_element_located((By.NAME, "senha")))
-    search = browser.find_element_by_name("senha")
-    search.send_keys("marilda809")
-    search.send_keys(Keys.RETURN)
-    WebDriverWait(browser, 10).until(
-                EC.presence_of_element_located((By.ID, "mn")))
-    browser.find_element_by_partial_link_text("de Pagamento").click()
-    WebDriverWait(browser, 10).until(
-                EC.presence_of_element_located((By.ID, "histFat")))
-    td = browser.find_element_by_link_text("{}".format(data)).click()
-    return td
+        WebDriverWait(browser, 10).until(
+                    EC.presence_of_element_located((By.NAME, "senha")))
+        search = browser.find_element_by_name("senha")
+        search.send_keys("marilda809")
+        search.send_keys(Keys.RETURN)
+        WebDriverWait(browser, 10).until(
+                    EC.presence_of_element_located((By.ID, "mn")))
+        browser.find_element_by_partial_link_text("de Pagamento").click()
+        WebDriverWait(browser, 10).until(
+                    EC.presence_of_element_located((By.ID, "histFat")))
+        td = browser.find_element_by_link_text("{}".format(data)).click()
+        return td
+    except:
+        raise TypeError('Data {} não foi encontrada'.format(data))
 
 
 def save():

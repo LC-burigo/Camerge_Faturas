@@ -3,28 +3,31 @@ from Faturas.Mudar_caminho import change_path
 import os
 
 
-def salvar_faturas():
-    if os.path.isfile(r'C:\Users\burig\OneDrive\Documentos\Disciplina de comercialização\{}'.format("marilda.pdf")):
-        print("The {} file already exists".format("marilda.pdf"))
+def salvar_faturas(data):
+    if os.path.isfile(r'C:\Users\burig\OneDrive\Documentos\Disciplina de comercialização\marilda{}.pdf'.format("1")):
+        print("The marilda{}.pdf file already exists".format("1"))
     else:
-        main("01/2021")
-
-        change_path("marilda.pdf")
-    if os.path.isfile(r'C:\Users\burig\OneDrive\Documentos\Disciplina de comercialização\{}'.format("marilda2.pdf")):
-        print("The {} file already exists".format("marilda2.pdf"))
+        main(data)
+        change_path("marilda1.pdf")
+        print("marilda1.pdf was created")
+    if os.path.isfile(r'C:\Users\burig\OneDrive\Documentos\Disciplina de comercialização\marilda{}.pdf'.format("2")):
+        print("The marilda{}.pdf file already exists".format("2"))
     else:
-        main("02/2021")
+        main(data)
         change_path("marilda2.pdf")
-    if os.path.isfile(r'C:\Users\burig\OneDrive\Documentos\Disciplina de comercialização\{}'.format("marilda3.pdf")):
-        print("The {} file already exists".format("marilda3.pdf"))
+        print("marilda2.pdf was created")
+    if os.path.isfile(r'C:\Users\burig\OneDrive\Documentos\Disciplina de comercialização\marilda{}.pdf'.format("3")):
+        print("The marilda{}.pdf file already exists".format("3"))
     else:
-        main("12/2020")
+        main(data)
         change_path("marilda3.pdf")
-    if os.path.isfile(
-            r'C:\Users\burig\OneDrive\Documentos\Disciplina de comercialização\{}'.format("marilda4.pdf")):
-        print("The {} file already exists".format("marilda4.pdf"))
+        print("marilda3.pdf was created")
+    if os.path.isfile(r'C:\Users\burig\OneDrive\Documentos\Disciplina de comercialização\marilda{}.pdf'.format("4")):
+        print("The marilda{}.pdf file already exists".format("4"))
     else:
-        main("11/2020")
+        main(data)
         change_path("marilda4.pdf")
+        print("marilda4.pdf was created")
 
-salvar_faturas()
+
+salvar_faturas("01/2021")

@@ -201,4 +201,4 @@ def execution():
     myApp.exec_()
 
 
-# execution()
+execution()
