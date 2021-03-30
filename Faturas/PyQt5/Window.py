@@ -4,9 +4,81 @@ from PyQt5.QtWidgets import *
 import sqlite3
 from PyQt5.QtGui import QPixmap, QFont
 from PIL import Image
+from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import pyautogui
+import time
+from Faturas.Mudar_caminho import change_path
+from Faturas.Mudar_caminho import find_path
 
 connection = sqlite3.connect('camerge.db')
 cursor = connection.cursor()
+
+
+def main(data, agent):
+    browser = access()
+    find(browser, data, agent)
+    browser.quit()
+
+
+def access():
+    browser = webdriver.Chrome("C:\Program Files (x86)\chromedriver.exe")
+    browser.get("https://agenciaweb.celesc.com.br/AgenciaWeb/autenticar/loginCliente.do")
+    browser.maximize_window()
+    return browser
+
+
+def find(browser, data, agent):
+
+    query = "SELECT agente, UC, cnpj, senha FROM customers WHERE agente = ?"
+    customer = cursor.execute(query, (agent,)).fetchone()
+    search = browser.find_element_by_name("sqUnidadeConsumidora")
+    search.send_keys(customer[1])
+    search = browser.find_element_by_name("numeroDocumentoCPF")
+    search.send_keys(customer[2])
+    search.send_keys(Keys.RETURN)
+
+    WebDriverWait(browser, 10).until(
+                EC.presence_of_element_located((By.NAME, "senha")))
+    search = browser.find_element_by_name("senha")
+    search.send_keys(customer[3])
+    search.send_keys(Keys.RETURN)
+    WebDriverWait(browser, 10).until(
+                EC.presence_of_element_located((By.ID, "mn")))
+    browser.find_element_by_partial_link_text("de Pagamento").click()
+    try:
+        WebDriverWait(browser, 10).until(
+            EC.presence_of_element_located((By.ID, "histFat")))
+        td = browser.find_element_by_link_text("{}".format(data)).click()
+        save()
+        return td
+    except NoSuchElementException:
+        print("{}-{} não foi achado".format(data, agent))
+
+
+def save():
+    pyautogui.hotkey('ctrl', 's')
+    time.sleep(2)
+    pyautogui.press('enter')
+    time.sleep(1)
+
+
+def download_bill(data, agent, date):
+    if os.path.isfile(find_path(date, agent)):
+        print("The {} - {}.pdf file already exists".format(date, agent))
+    else:
+        main(data, agent)
+        if os.path.isfile(r'C:\Users\burig\Downloads\SegundaViaFatura.pdf'):
+            change_path(date, agent)
+            print("{} - {}.pdf was created".format(date.replace("/", "."), agent))
+        else:
+            pass
+
+
 agent_id = None
 agent_name = None
 
@@ -35,6 +107,8 @@ class Window(QWidget):
         self.btnUpdate.clicked.connect(self.updateCustomer)
         self.btnDelete = QPushButton("Deletar")
         self.btnDelete.clicked.connect(self.delete)
+        self.btnSaveBill = QPushButton("Baixar faturas")
+        self.btnSaveBill.clicked.connect(self.downloadWindow)
 
     def layouts(self):
         ########Layouts#########
@@ -53,6 +127,7 @@ class Window(QWidget):
         self.rightBottomLayout.addWidget(self.btnNew)
         self.rightBottomLayout.addWidget(self.btnUpdate)
         self.rightBottomLayout.addWidget(self.btnDelete)
+        self.rightBottomLayout.addWidget(self.btnSaveBill)
         #######setting main window layout##########
         self.setLayout(self.mainLayout)
 
@@ -130,6 +205,10 @@ class Window(QWidget):
             self.close()
         else:
             QMessageBox.information(self, "Alerta", "Selecione um agente ser atualizado")
+
+    def downloadWindow(self):
+        self.download = DownloadWindow()
+        self.close()
 
 
 class Update(QWidget):
@@ -289,7 +368,6 @@ class Insert(QWidget):
         self.mainLayout.addLayout(self.bottomLayout)
 
         ######adding widgets to top layouts###########
-        self.topLayout.addStretch()
         self.topLayout.addWidget(self.title)
         self.topLayout.addWidget(self.imgAdd)
         self.topLayout.addStretch()
@@ -324,6 +402,40 @@ class Insert(QWidget):
             QMessageBox.information(self, "ALERTA!!!", "Todos os campos devem ser preenchidos")
 
 
+class DownloadWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Baixar Faturas")
+        self.setGeometry(450, 150, 750, 600)
+        self.UI()
+        self.show()
+
+    def UI(self):
+        self.mainDesign()
+
+    def mainDesign(self):
+        #########Widgets############
+        self.checkMarilda = QCheckBox("Marilda", self)
+        self.data = QLineEdit(self)
+        self.data.setPlaceholderText("Insira a data das Faturas")
+        self.data.move(90, 0)
+        self.date = QLineEdit(self)
+        self.date.setPlaceholderText("Insira a data para salvar")
+        self.date.move(230, 0)
+        self.btnDownload = QPushButton("Baixar", self)
+        self.btnDownload.clicked.connect(self.download)
+        self.btnDownload.move(0, 577)
+
+    def download(self):
+        if self.checkMarilda.isChecked() and self.data != "" and self.date !="":
+            download_bill(self.data.text(), self.checkMarilda.text(), self.date.text())
+        else:
+            QMessageBox.information(self, "ALERTA!!!", "Você esqueceu de Escolher ao menos um agente OU esqueceu de colocar de preencher o campo da data")
+
+    def closeEvent(self, event):
+        self.main = Window()
+
+
 def execution():
     App = QApplication(sys.argv)
     window = Window()
@@ -332,3 +444,10 @@ def execution():
 
 if __name__ == '__main__':
     execution()
+
+
+
+
+
+
+

@@ -11,8 +11,6 @@ import time
 def main(data):
     browser = access()
     find(browser, data)
-    time.sleep(1)
-    save()
     browser.quit()
 
 
@@ -42,6 +40,7 @@ def find(browser, data):
         WebDriverWait(browser, 10).until(
             EC.presence_of_element_located((By.ID, "histFat")))
         td = browser.find_element_by_link_text("{}".format(data)).click()
+        save()
         return td
     except NoSuchElementException:
         print("No element found")
@@ -52,7 +51,6 @@ def save():
     time.sleep(2)
     pyautogui.press('enter')
     time.sleep(1)
-
 
 
 
