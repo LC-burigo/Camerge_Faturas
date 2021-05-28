@@ -33,7 +33,6 @@ def access():
 
 
 def find(browser, data, agent):
-
     query = "SELECT agente, UC, cnpj, senha FROM customers WHERE agente = ?"
     customer = cursor.execute(query, (agent,)).fetchone()
     search = browser.find_element_by_name("sqUnidadeConsumidora")
@@ -43,12 +42,12 @@ def find(browser, data, agent):
     search.send_keys(Keys.RETURN)
 
     WebDriverWait(browser, 10).until(
-                EC.presence_of_element_located((By.NAME, "senha")))
+        EC.presence_of_element_located((By.NAME, "senha")))
     search = browser.find_element_by_name("senha")
     search.send_keys(customer[3])
     search.send_keys(Keys.RETURN)
     WebDriverWait(browser, 10).until(
-                EC.presence_of_element_located((By.ID, "mn")))
+        EC.presence_of_element_located((By.ID, "mn")))
     browser.find_element_by_partial_link_text("de Pagamento").click()
     try:
         WebDriverWait(browser, 10).until(
@@ -163,7 +162,7 @@ class Window(QWidget):
         customer = self.customersList.currentItem().text()
         id = customer.split("-")[0]
         query = "SELECT * FROM customers WHERE id = ?"
-        consumer = cursor.execute(query, (id, )).fetchone()
+        consumer = cursor.execute(query, (id,)).fetchone()
         agent = QLabel(consumer[1])
         uc = QLabel(consumer[2])
         cnpj = QLabel(consumer[3])
@@ -179,7 +178,8 @@ class Window(QWidget):
             person = self.customersList.currentItem().text()
             id = person.split("-")[0]
             agente = person.split("-")[1]
-            mbox = QMessageBox.question(self, "Alerta!!!", "Você realmente quer deletar o agente {}".format(agente), QMessageBox.Yes|QMessageBox.No, QMessageBox.No)
+            mbox = QMessageBox.question(self, "Alerta!!!", "Você realmente quer deletar o agente {}".format(agente),
+                                        QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
             if mbox == QMessageBox.Yes:
                 try:
@@ -427,10 +427,11 @@ class DownloadWindow(QWidget):
         self.btnDownload.move(0, 577)
 
     def download(self):
-        if self.checkMarilda.isChecked() and self.data != "" and self.date !="":
+        if self.checkMarilda.isChecked() and self.data != "" and self.date != "":
             download_bill(self.data.text(), self.checkMarilda.text(), self.date.text())
         else:
-            QMessageBox.information(self, "ALERTA!!!", "Você esqueceu de Escolher ao menos um agente OU esqueceu de colocar de preencher o campo da data")
+            QMessageBox.information(self, "ALERTA!!!",
+                                    "Você esqueceu de escolher ao menos um agente OU esqueceu de preencher o campo da data")
 
     def closeEvent(self, event):
         self.main = Window()
@@ -444,10 +445,3 @@ def execution():
 
 if __name__ == '__main__':
     execution()
-
-
-
-
-
-
-
