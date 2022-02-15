@@ -39,8 +39,8 @@ def envio_medicoes(data, pessoa):
             df.to_excel('C:/Users/burig/OneDrive/Documentos/Resumo {}.xlsx'.format(agente))
 
 
-envio_medicoes("jan-22", 'andre')
-envio_medicoes("jan-22", 'paulo')
-envio_medicoes("jan-22", 'felipe')
+#envio_medicoes("jan-22", 'andre')
+#envio_medicoes("jan-22", 'paulo')
+#envio_medicoes("jan-22", 'felipe')
 
 
