@@ -93,4 +93,4 @@ def execution():
     myApp.exec_()
     return logged
 
-
+execution()

@@ -68,7 +68,7 @@ def save():
 
 def download_bill(data, agent, date):
     if os.path.isfile(find_path(date, agent)):
-        print("The {} - {}.pdf file already exists".format(date, agent))
+        print("The {} - {}.pdf file already exists".format(date.replace("/", "."), agent))
     else:
         main(data, agent)
         if os.path.isfile(r'C:\Users\burig\Downloads\SegundaViaFatura.pdf'):

@@ -53,6 +53,15 @@ def save():
     time.sleep(1)
 
 
-main("04/2021")
+# main("04/2021")
+
+def Printar(palavra):
+    return palavra * 2
+
+
+print(Printar("hi"))
+
+
+
 
 
